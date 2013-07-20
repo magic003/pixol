@@ -18,7 +18,7 @@ module Pixol ; module Request
     end
 
     def call(env)
-      req = env.request
+      req = env['piper.request']
       if req.nil?
         req = Piper::Request.new(:get, REQUEST_PATH)
       else
@@ -31,7 +31,7 @@ module Pixol ; module Request
         oldval.nil? ? newval : oldval
       end
 
-      env.request = req
+      env['piper.request'] = req
 
       @app.call(env)
     end

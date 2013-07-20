@@ -7,12 +7,13 @@ module Pixol ; module Request
     end
 
     def call(env)
-      last_id = env.extra[:since_id]
+      env['piper.extra'] = {} if env['piper.extra'].nil?
+      last_id = env['piper.extra'][:since_id]
       if last_id.nil?
         fail 'The since_id is not set'
       end
 
-      req = env.request
+      req = env['piper.request']
       if req.nil?
         fail 'The request is not created yet'
       end
@@ -20,7 +21,7 @@ module Pixol ; module Request
       loop do
         req.queries[:since_id] = last_id
         @app.call(env)
-        res = env.response
+        res = env['piper.response']
         if res.nil? #|| res.parsed_body.nil?
           fail 'Response is not available or not successfully parsed.'
         end
